@@ -18,13 +18,18 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls.conf import include
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='paymeback')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('my_lender.urls')),
-    path('',include('my_borrower.urls')), 
-    path('',include('account.urls')),
-    path('',include('transaction.urls')),
+    path('my_lender/',include('my_lender.urls')),
+    path('my_borrower/',include('my_borrower.urls')), 
+    path('account/',include('account.urls')),
+    path('transaction/',include('transaction.urls')),
+    path('',schema_view),
+    path('accounts/',include('rest_framework.urls')),
 
 ]
 

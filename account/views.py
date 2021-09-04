@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework.fields import Field
 from .models import Account
 from rest_framework import status
 from .serializers import accountSerializer
@@ -7,9 +8,22 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import  IsAuthenticated
+import coreapi
+from rest_framework.schemas.openapi import AutoSchema
 
+
+class accountViewSchema(AutoSchema):
+    def get_manual_fields(self,path, method):
+        extra_fiels = []
+        if method.lower()  in ['post', 'put']:
+            extra_fields = [
+                 coreapi.Field('phoneNumber')
+            ]
+        manual_fields = super().get_manual_fields(path, method)
+        return manual_fields + extra_fields
 
 class accountListView(APIView): 
+    schema = accountViewSchema()
     """
     class to get all customers and post a customer records stored 
     """
@@ -66,3 +80,4 @@ class accountDetails(APIView):
         client = self.get_object(pk)
         client.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
